@@ -11,28 +11,28 @@ import '../impl.dart';
 class DirUtils implements LocalStorageImpl {
   DirUtils(this.fileName, [this.path]);
 
-  final String path, fileName;
+  final String? path, fileName;
 
-  Map<String, dynamic> _data = Map();
+  Map<String, dynamic>? _data = Map();
 
   @override
-  Stream<Map<String, dynamic>> get stream => storage.stream;
+  Stream<Map<String, dynamic>?> get stream => storage.stream;
 
-  StreamController<Map<String, dynamic>> storage =
-      StreamController<Map<String, dynamic>>();
+  StreamController<Map<String, dynamic>?> storage =
+      StreamController<Map<String, dynamic>?>();
 
-  RandomAccessFile _file;
+  RandomAccessFile? _file;
 
   @override
   Future<void> clear() async {
-    _data.clear();
+    _data!.clear();
     storage.add(null);
   }
 
   @override
   void dispose() {
     storage.close();
-    _file.close();
+    _file!.close();
   }
 
   @override
@@ -45,22 +45,22 @@ class DirUtils implements LocalStorageImpl {
     final serialized = json.encode(data ?? _data);
     final buffer = utf8.encode(serialized);
 
-    _file = await _file.lock();
-    _file = await _file.setPosition(0);
-    _file = await _file.writeFrom(buffer);
-    _file = await _file.truncate(buffer.length);
+    _file = await _file!.lock();
+    _file = await _file!.setPosition(0);
+    _file = await _file!.writeFrom(buffer);
+    _file = await _file!.truncate(buffer.length);
   }
 
   @override
   dynamic getItem(String key) {
-    return _data[key];
+    return _data![key];
   }
 
   @override
-  Future<void> init([Map<String, dynamic> initialData]) async {
+  Future<void> init([Map<String, dynamic>? initialData]) async {
     _data = initialData ?? {};
 
-    final f = await _getFile();
+    final f = await (_getFile() as FutureOr<RandomAccessFile>);
     final length = await f.length();
 
     if (length == 0) {
@@ -72,27 +72,27 @@ class DirUtils implements LocalStorageImpl {
 
   @override
   Future<void> remove(String key) async {
-    _data.remove(key);
+    _data!.remove(key);
   }
 
   @override
   Future<void> setItem(String key, dynamic value) async {
-    _data[key] = value;
+    _data![key] = value;
   }
 
   Future<void> _readFile() async {
-    RandomAccessFile _file = await _getFile();
+    RandomAccessFile _file = await (_getFile() as FutureOr<RandomAccessFile>);
     final length = await _file.length();
     _file = await _file.setPosition(0);
     final buffer = new Uint8List(length);
     await _file.readInto(buffer);
     final contentText = utf8.decode(buffer);
 
-    _data = json.decode(contentText) as Map<String, dynamic>;
+    _data = json.decode(contentText) as Map<String, dynamic>?;
     storage.add(_data);
   }
 
-  Future<RandomAccessFile> _getFile() async {
+  Future<RandomAccessFile?> _getFile() async {
     if (_file != null) {
       return _file;
     }

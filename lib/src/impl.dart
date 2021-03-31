@@ -3,13 +3,13 @@ import 'dart:async';
 abstract class LocalStorageImpl {
   LocalStorageImpl(this.fileName, [this.path]);
 
-  final String path, fileName;
+  final String? path, fileName;
 
-  Stream<Map<String, dynamic>> get stream;
+  Stream<Map<String, dynamic>?> get stream;
 
   void dispose();
 
-  Future<void> init([Map<String, dynamic> initialData]);
+  Future<void> init([Map<String, dynamic>? initialData]);
 
   Future<void> setItem(String key, dynamic value);
 

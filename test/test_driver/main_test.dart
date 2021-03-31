@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 
 void main() {
   group('Integration Test App', () {
-    FlutterDriver driver;
+    FlutterDriver? driver;
 
     setUpAll(() async {
       driver ??= await FlutterDriver.connect();
@@ -13,19 +13,19 @@ void main() {
 
     tearDownAll(() async {
       if (driver != null) {
-        await driver.close();
+        await driver!.close();
       }
     });
 
     test('run assert test', () async {
-      await driver.tap(find.byValueKey('assertBtn'));
+      await driver!.tap(find.byValueKey('assertBtn'));
 
       bool success = false;
 
       final txtFinder = find.byValueKey('assertTxt');
 
       for (;;) {
-        final txt = await driver.getText(txtFinder);
+        final txt = await driver!.getText(txtFinder);
 
         if (txt.contains('success')) {
           success = true;
@@ -44,14 +44,14 @@ void main() {
     });
 
     test('run throughput test', () async {
-      await driver.tap(find.byValueKey('tputBtn'));
+      await driver!.tap(find.byValueKey('tputBtn'));
 
       bool success = false;
 
       final txtFinder = find.byValueKey('tputTxt');
 
       for (;;) {
-        final txt = await driver.getText(txtFinder);
+        final txt = await driver!.getText(txtFinder);
 
         if (txt.contains('success')) {
           success = true;

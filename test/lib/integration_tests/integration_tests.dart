@@ -49,7 +49,7 @@ class IntegrationTests {
 
     print(' \n \nWRITE THROUGHPUT: $mbps MB/s\n ');
 
-    final keys = buffer.map((b) => b['key'] as String);
+    final keys = buffer.map((b) => b['key'] as String?);
 
     final t1 = DateTime.now();
     final res = await Future.wait(keys.map((k) => _readTest(k, itemsPerFile)));
@@ -111,7 +111,7 @@ class IntegrationTests {
   }
 
   static Future<void> _writeTest(Map<String, dynamic> file) async {
-    String key = file['key'];
+    String? key = file['key'];
     List<Map<String, dynamic>> items = file['items'];
 
     final storage = LocalStorage(key);
@@ -123,7 +123,7 @@ class IntegrationTests {
     }
   }
 
-  static Future<List<dynamic>> _readTest(String key, int n) {
+  static Future<List<dynamic>> _readTest(String? key, int n) {
     return Future.wait(List<Future<dynamic>>.generate(n, (i) async {
       return (await LocalStorage(key).getItem('$i'));
     }));
